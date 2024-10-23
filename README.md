@@ -1,6 +1,6 @@
-# AI-Powered Customer Support Chatbot
+#CustomerCare-AI
 
-Welcome to the AI-Powered Customer Support Chatbot project! This application leverages **LangChain** and **Twilio** to provide an intelligent and responsive customer support solution. It utilizes advanced AI techniques to interact with users and provide instant answers based on a custom knowledge base loaded from PDF documents.
+Introducing the CustomerCareAI —a solution that enables businesses to create custom chatbots instantly using their knowledge base from PDF documents. It offers seamless integration into websites and includes voice call functionality via Twilio. Additionally, users can interact with the chatbot through a Telegram bot, providing an efficient and cost-effective customer support experience.
 
 ## Features
 

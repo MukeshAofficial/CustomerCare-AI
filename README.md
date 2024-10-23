@@ -13,7 +13,8 @@ Welcome to the AI-Powered Customer Support Chatbot project! This application lev
 - **Web Interface**: User-friendly web interface for seamless interaction.
 
 # Architecture Diagram
-![Architecture](https://github.com/user-attachments/assets/c4a93f71-3419-4d52-8859-cc1177cf979d)
+![6e2c4ebc-bd5b-4f3a-9773-debddf07df71](https://github.com/user-attachments/assets/33620f80-5a4f-4c08-8c44-7301a56d87b7)
+
 
 ## Business Impact
 

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT Response</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom, #000000, #000000);
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      position: relative;
+    }
+
+    #listening-text {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .boxContainer {
+      display: flex;
+      justify-content: space-between;
+      height: 64px;
+      --boxSize: 8px;
+      --gutter: 4px;
+      width: calc((var(--boxSize) + var(--gutter)) * 5);
+      margin: 20px 0;
+    }
+
+    .box {
+      transform: scaleY(0.4);
+      height: 100%;
+      width: var(--boxSize);
+      background: #12E2DC;
+      animation-duration: 1.2s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      border-radius: 8px;
+    }
+
+    .box1 { animation-name: quiet; }
+    .box2 { animation-name: normal; }
+    .box3 { animation-name: quiet; }
+    .box4 { animation-name: loud; }
+    .box5 { animation-name: quiet; }
+
+    @keyframes quiet {
+      25% { transform: scaleY(0.6); }
+      50% { transform: scaleY(0.4); }
+      75% { transform: scaleY(0.8); }
+    }
+
+    @keyframes normal {
+      25% { transform: scaleY(1); }
+      50% { transform: scaleY(0.4); }
+      75% { transform: scaleY(0.6); }
+    }
+
+    @keyframes loud {
+      25% { transform: scaleY(1); }
+      50% { transform: scaleY(0.4); }
+      75% { transform: scaleY(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="listening-text">Listening...</div>
+    <div class="boxContainer">
+      <div class="box box1"></div>
+      <div class="box box2"></div>
+      <div class="box box3"></div>
+      <div class="box box4"></div>
+      <div class="box box5"></div>
+    </div>
+
+    <h2>Generated Response:</h2>
+    <p>{{ response }}</p>
+
+    {% if audio %}
+      <audio id="audioPlayer" controls autoplay style="display: none;">
+        <source src="data:audio/mp3;base64,{{ audio }}" type="audio/mp3">
+        Your browser does not support the audio element.
+      </audio>
+      <button id="playButton" onclick="playAudio()">Play Again</button>
+    {% endif %}
+
+    <form id="commandForm">
+      <input type="text" id="transcribed-text" name="transcribed_text" style="display: none;">
+      <p>Speak your command...</p>
+    </form>
+  </div>
+
+  <script>
+    // Function to play audio from the audio player
+    function playAudio() {
+      const audio = document.getElementById('audioPlayer');
+      audio.currentTime = 0; // Reset audio to the beginning
+      audio.play();
+    }
+
+    // Check if the browser supports speech recognition
+    if ('webkitSpeechRecognition' in window) {
+      // Create a speech recognition object
+      const recognition = new webkitSpeechRecognition();
+      recognition.continuous = false; // Change to false for single command
+      recognition.lang = 'en-US';
+
+      // Handle the result from the speech recognition
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript; // Get the transcribed text
+        document.getElementById('transcribed-text').value = transcript; // Fill the hidden input field
+        // Submit the form using fetch
+        fetch('/gpt', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ transcribed_text: transcript }) // Send the transcribed text as JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response data here if needed
+          console.log(data);
+        })
+        .catch(error => console.error('Error:', error));
+      };
+
+      // Start listening
+      recognition.start();
+    } else {
+      console.log('Speech recognition not supported');
+    }
+  </script>
+</body>
+</html>
